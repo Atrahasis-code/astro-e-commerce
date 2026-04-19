@@ -1,5 +1,5 @@
 {
-  "name": "receptive-radiation",
+  "name": "test-e-commerce",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.1.8"
+    "@astrojs/node": "^10.0.5",
+    "@astrojs/preact": "^5.1.1",
+    "@supabase/supabase-js": "^2.103.3",
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.1.8",
+    "preact": "^10.29.1",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "supabase": "^2.92.1"
   }
 }
