@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
   issues: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   test:
@@ -22,8 +22,8 @@ jobs:
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn'
+          node-version: "22"
+          cache: "yarn"
 
       - name: Enable Corepack (Yarn)
         run: corepack enable
@@ -46,7 +46,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
-            
+
             if (!pr) {
               console.log("No PR context found, skipping issue creation.");
               return;
@@ -54,21 +54,21 @@ jobs:
 
             const title = `🚨 Falla en CI: Pruebas no pasaron en PR #${pr.number}`;
             const body = `### ❌ Pruebas automáticas fallidas
-            
+
             El pipeline de integración continua ha detectado pruebas fallidas en el Pull Request #${pr.number} creado por @${pr.user.login}.
-            
+
             **Rama origen:** \`${pr.head.ref}\`
-            
+
             Para mantener la integridad tecnológica del E-commerce, no se puede realizar el merge a la rama principal hasta que todos los tests pasen exitosamente.
-            
+
             #### Acciones requeridas:
             1. Revisa los logs detallados del [Workflow Fallido](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).
             2. Corrige los errores en la rama \`${pr.head.ref}\`.
             3. Haz push de los cambios. El pipeline se ejecutará nuevamente.
-            
+
             [➡️ Ver Pull Request Original](${pr.html_url})
             `;
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
