@@ -1,97 +1,133 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { ProductCard } from "../components/ProductCard";
+import Layout from '../layouts/Layout.astro';
+import { ProductCard } from '../components/ProductCard';
+import { supabase } from '../lib/supabase';
 
-// We'll mock some products for now since DB might not have them yet
-const featuredProducts = [
-  {
-    id: "1",
-    title: "Neural Bracer X-1",
-    description:
-      "Advanced digital accessory for the metaverse. Syncs with your digital identity.",
-    price: 49.99,
-    image: "/hero.png",
-    slug: "neural-bracer-x1",
-  },
-  {
-    id: "2",
-    title: "Synth-Fiber Cloak",
-    description:
-      "Ultra-lightweight digital apparel with dynamic texture mapping.",
-    price: 89.99,
-    image:
-      "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&q=80&w=800",
-    slug: "synth-fiber-cloak",
-  },
+// Fetch dynamic categories
+const { data: categories } = await supabase
+    .from('categories')
+    .select('*')
+    .order('name');
+
+// Fetch some featured products
+const { data: featuredProducts } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .limit(4);
+
+// Fallback logic for development if DB is empty
+const displayCategories = categories && categories.length > 0 ? categories : [
+    { id: '1', name: 'Accesorios', slug: 'accesorios' },
+    { id: '2', name: 'Ropa', slug: 'ropa' },
+    { id: '3', name: 'Periféricos', slug: 'perifericos' }
+];
+
+const displayProducts = featuredProducts && featuredProducts.length > 0 ? featuredProducts : [
+    {
+        id: '1',
+        title: 'Neural Bracer X-1',
+        description: 'Accesorio físico de alta tecnología con sincronización neural.',
+        price: 49.99,
+        image_url: '/hero.png',
+        slug: 'neural-bracer-x1',
+        can_ship: true
+    }
 ];
 ---
 
-<Layout title="DigitalStore | Premium Virtual Apparel">
-  <section class="relative pt-32 pb-20 overflow-hidden">
-    <div class="container mx-auto px-6 relative z-10">
-      <div class="max-w-3xl">
-        <h1
-          class="text-6xl md:text-8xl font-['Outfit'] font-extrabold leading-tight mb-6"
-        >
-          Elevate Your <span
-            class="bg-linear-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent"
-            >Digital Persona</span
-          >
-        </h1>
-        <p class="text-xl text-white/60 mb-10 max-w-xl leading-relaxed">
-          Exclusive digital accessories and apparel designed for the next
-          generation of virtual identity. Premium, limited edition, and fully
-          tradable.
-        </p>
-        <div class="flex flex-wrap gap-4">
-          <a
-            href="/products"
-            class="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full transition-all transform hover:scale-105"
-          >
-            Shop Collection
-          </a>
-          <a
-            href="#featured"
-            class="px-8 py-4 glass text-white font-bold rounded-full hover:bg-white/10 transition-all"
-          >
-            View Featured
-          </a>
+<Layout title="DigitalStore | Calidad Premium">
+    <!-- Hero Section -->
+    <section class="pt-16 pb-12 md:pt-24 md:pb-24">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-7xl font-['Outfit'] font-extrabold tracking-[-0.02em] text-brand-gray mb-6">
+                Diseñado para el <br class="hidden md:block" /> <span class="text-brand-blue">mañana</span>. Hoy.
+            </h1>
+            <p class="text-lg md:text-xl text-[#86868B] max-w-2xl mx-auto mb-10 leading-relaxed">
+                Explora nuestra colección exclusiva de productos físicos y accesorios de alta gama.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="/products" class="px-8 py-3.5 bg-brand-gray text-white font-bold rounded-full hover:opacity-90 transition-all">
+                    Ver colección
+                </a>
+            </div>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Decorative Glow -->
-    <div
-      class="absolute top-1/2 -right-20 -translate-y-1/2 w-150 h-150 bg-purple-600/20 blur-[120px] rounded-full"
-    >
-    </div>
-  </section>
-
-  <section id="featured" class="py-24 bg-white/2">
-    <div class="container mx-auto px-6">
-      <div class="flex justify-between items-end mb-12">
-        <div>
-          <h2 class="text-4xl font-['Outfit'] font-bold mb-4">
-            Featured Releases
-          </h2>
-          <p class="text-white/40">
-            Handpicked digital products for your collection.
-          </p>
+    <!-- Categories Grid / Dynamic Links -->
+    <section class="py-8 border-y border-black/5">
+        <div class="container mx-auto px-6">
+            <div class="flex overflow-x-auto pb-4 gap-4 no-scrollbar items-center">
+                <a 
+                    href="/products" 
+                    class="px-6 py-2 bg-surface-gray text-brand-gray rounded-full text-sm font-semibold whitespace-nowrap hover:bg-gray-200 transition-colors"
+                >
+                    Todos
+                </a>
+                {displayCategories.map((cat) => (
+                    <a 
+                        href={`/products?category=${cat.id}`}
+                        class="px-6 py-2 bg-surface-gray text-brand-gray rounded-full text-sm font-semibold whitespace-nowrap hover:bg-gray-200 transition-colors"
+                    >
+                        {cat.name}
+                    </a>
+                ))}
+            </div>
         </div>
-        <a
-          href="/products"
-          class="text-purple-400 hover:text-purple-300 font-medium transition-colors"
-          >See all products &rarr;</a
-        >
-      </div>
+    </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {
-          featuredProducts.map((product) => (
-            <ProductCard client:load product={product} />
-          ))
-        }
-      </div>
-    </div>
-  </section>
+    <!-- Featured Products -->
+    <section id="featured" class="py-16 md:py-24">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-10">
+                <h2 class="text-2xl md:text-4xl font-['Outfit'] font-bold tracking-tight">Destacados</h2>
+                <a href="/products" class="text-sm font-bold text-brand-blue hover:underline">Ver todos &rarr;</a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+                {displayProducts.map((product) => (
+                    <ProductCard client:load product={product} />
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Info -->
+    <section class="py-12 px-6">
+        <div class="container mx-auto glass p-8 md:p-16 rounded-4xl bg-surface-gray border-none flex flex-col md:flex-row items-center gap-12">
+            <div class="flex-1">
+                <h2 class="text-3xl md:text-5xl font-['Outfit'] font-bold mb-6">Entregas a coordinar.</h2>
+                <p class="text-[#86868B] text-lg leading-relaxed mb-8">
+                    Ya sea un accesorio para tu celular o una prenda exclusiva, coordinamos la mejor forma de entregártelo. Calidad garantizada.
+                </p>
+                <div class="flex gap-4">
+                   <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        </div>
+                        <span class="text-xs font-bold">Seguridad Total</span>
+                   </div>
+                   <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </div>
+                        <span class="text-xs font-bold">Envío Seguro</span>
+                   </div>
+                </div>
+            </div>
+            <div class="flex-1 w-full aspect-video bg-white rounded-2xl shadow-sm overflow-hidden flex items-center justify-center border border-black/5">
+                <span class="text-[#86868B] font-medium italic">Lifestyle Preview</span>
+            </div>
+        </div>
+    </section>
 </Layout>
+
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>

@@ -1,13 +1,24 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-blue: #0071E3;
+  --color-brand-gray: #1D1D1F;
+  --color-surface-gray: #F5F5F7;
+}
+
 @layer base {
   body {
-    @apply antialiased;
+    @apply antialiased bg-white text-brand-gray;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv11";
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/70 backdrop-blur-xl border border-black/5;
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

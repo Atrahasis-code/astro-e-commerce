@@ -1,12 +1,14 @@
 import type { FunctionalComponent } from 'preact';
+import { formatPrice } from '../utils/format';
 
 interface Product {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     price: number;
-    image: string;
+    image_url: string | null;
     slug: string;
+    can_ship?: boolean;
 }
 
 interface Props {
@@ -15,39 +17,60 @@ interface Props {
 
 export const ProductCard: FunctionalComponent<Props> = ({ product }) => {
     return (
-        <div class="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden transition-all hover:scale-[1.02] hover:bg-white/[0.07]">
-            <div class="aspect-square overflow-hidden bg-black/40 relative">
+        <div class="group flex flex-col bg-white rounded-2xl transition-all duration-300">
+            {/* Image Frame with 15-20% padding */}
+            <div class="aspect-square w-full bg-surface-gray rounded-2xl overflow-hidden relative flex items-center justify-center p-[15%]">
                 <img 
-                    src={product.image} 
+                    src={product.image_url || "/placeholder.png"} 
                     alt={product.title} 
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    class="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                 />
-                <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <span class="text-white text-sm font-medium">Quick Preview</span>
+                
+                {/* Shipping Tag */}
+                <div class="absolute top-3 left-3 flex gap-2">
+                    {product.can_ship ? (
+                        <span class="px-2 py-1 bg-green-500/10 text-green-600 text-[10px] font-bold rounded-md flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            Envío disponible
+                        </span>
+                    ) : (
+                        <span class="px-2 py-1 bg-black/5 text-gray-500 text-[10px] font-bold rounded-md">
+                            Envio no disponible
+                        </span>
+                    )}
                 </div>
             </div>
-            <div class="p-8">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-2xl font-bold font-['Outfit']">{product.title}</h3>
-                    <span class="text-xl font-bold text-purple-400 font-['Outfit']">${product.price}</span>
+
+            {/* Content */}
+            <div class="pt-4 pb-2 px-1">
+                <div class="flex justify-between items-start gap-2 mb-1">
+                    <h3 class="text-base font-semibold text-brand-gray tracking-tight leading-tight">
+                        {product.title}
+                    </h3>
+                    <span class="text-sm font-bold text-brand-gray">
+                        {formatPrice(product.price)}
+                    </span>
                 </div>
-                <p class="text-white/60 text-sm mb-8 line-clamp-2 leading-relaxed">
+                <p class="text-xs text-[#86868B] mb-4 line-clamp-1">
                     {product.description}
                 </p>
-                <div class="flex gap-3">
+                <div class="flex items-center gap-3">
                     <button 
-                        onClick={() => console.log('Add to cart:', product.id)}
-                        class="flex-1 py-4 bg-purple-600 text-white font-bold rounded-2xl hover:bg-purple-500 transition-all active:scale-95"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            console.log('Add to cart:', product.id);
+                        }}
+                        class="flex-1 py-2.5 bg-brand-blue text-white text-xs font-bold rounded-full hover:opacity-90 transition-all active:scale-95"
                     >
-                        Add to Cart
+                        Comprar
                     </button>
                     <a 
                         href={`/products/${product.slug}`}
-                        class="p-4 glass rounded-2xl hover:bg-white/10 transition-all"
-                        aria-label="View Details"
+                        class="p-2.5 bg-surface-gray rounded-full text-brand-gray hover:bg-gray-200 transition-all"
+                        aria-label="Ver detalles"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </a>
                 </div>
             </div>

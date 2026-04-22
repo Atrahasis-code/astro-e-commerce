@@ -54,14 +54,34 @@ La aplicación estará disponible en `http://localhost:4321`.
 
 ---
 
+## 🧪 Calidad y Pruebas (CI/CD)
+
+Para garantizar la estabilidad del e-commerce, el proyecto cuenta con un sistema de pruebas automatizadas y un pipeline de integración continua.
+
+### 1. Pruebas Locales
+Utilizamos **Vitest** y **Testing Library** para validar componentes e islas de Preact, así como las utilidades lógicas.
+```bash
+yarn test
+```
+
+### 2. Integración Continua (GitHub Actions)
+Existe un workflow definido en `.github/workflows/ci.yml` que se activa en cada **Pull Request** hacia la rama `main`.
+- **Regla de Merge**: Es OBLIGATORIO que todos los tests pasen exitosamente. GitHub bloqueará el merge si el pipeline falla.
+- **Reporte de Errores**: Si el pipeline detecta una falla, el sistema abrirá automáticamente un **Issue** en el repositorio asignándolo al autor para su pronta revisión.
+
+---
+
 ## 📁 Estructura del Proyecto
 
 - `src/layouts/`: Plantillas base con diseño premium y SEO.
 - `src/pages/`: Rutas de la aplicación (SSR activado).
 - `src/components/`: Componentes atómicos e islas de Preact.
 - `src/lib/`: Configuración de clientes (Supabase, etc.).
+- `src/utils/`: Funciones de utilidad (ej. formateo de moneda).
+- `src/tests/`: Suite de pruebas unitarias y de componentes.
 - `src/types/`: Definiciones de TypeScript autogeneradas.
 - `supabase/migrations/`: Historial de cambios en la base de datos.
+- `supabase/seed.sql`: Datos de prueba (Categorías y Productos físicos).
 
 ---
 
@@ -74,6 +94,7 @@ El proyecto sigue las reglas establecidas en `GEMINI.md`:
 ---
 
 ## 📜 Comandos Útiles
-- `npx supabase db reset`: Reinicia la base de datos local y vuelve a aplicar todas las migraciones.
+- `yarn test`: Ejecuta la suite de pruebas con Vitest.
+- `npx supabase db reset`: Reinicia la base de datos local y vuelve a aplicar todas las migraciones + Seeds.
 - `yarn build`: Genera el bundle de producción para el adaptador de Node.js.
 - `npx supabase stop`: Detiene los contenedores locales de Supabase.
