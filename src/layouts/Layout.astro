@@ -6,6 +6,7 @@ interface Props {
 
 const { title, description = "Premium Digital E-commerce" } = Astro.props;
 import "../styles/global.css";
+import AuthHeaderButton from "@/components/auth/AuthHeaderButton";
 ---
 
 <!doctype html>
@@ -38,12 +39,14 @@ import "../styles/global.css";
         <a href="/" class="text-xl font-['Outfit'] font-bold tracking-tight">
           DigitalStore<span class="text-brand-blue">.</span>
         </a>
-        <div class="flex items-center gap-8">
+        <div class="flex items-center gap-6">
           <a
             href="/products"
             class="text-sm font-medium hover:text-brand-blue transition-colors"
             >Productos</a
           >
+          <div class="h-6 w-px bg-black/5"></div>
+          <AuthHeaderButton client:load initialUser={Astro.locals.user} />
           <a
             href="/cart"
             class="relative p-2 hover:text-brand-blue transition-colors"
@@ -73,6 +76,8 @@ import "../styles/global.css";
         </div>
       </nav>
     </header>
+
+
 
     <!-- Main Content -->
     <main class="relative min-h-screen pb-24 md:pb-0">

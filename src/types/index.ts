@@ -11,5 +11,5 @@ export interface Product {
     price: number;
     image_url: string | null;
     slug: string;
-    can_ship?: boolean;
+    can_ship: boolean | null;
 }

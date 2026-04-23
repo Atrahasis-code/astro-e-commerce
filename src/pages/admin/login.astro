@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AdminLoginForm from '@/components/auth/AdminLoginForm';
+
+// Redirect if already logged in as admin (SSR check might be more complex, but let's start with basic)
+if (Astro.locals.user) {
+    // We could check role here if we had it in locals, but for now simple redirect
+}
+---
+
+<Layout title="Admin Login | DigitalStore">
+    <div class="min-h-[calc(100vh-160px)] flex items-center justify-center px-6 py-12 bg-[#1C1C1E]">
+        <AdminLoginForm client:load />
+    </div>
+</Layout>

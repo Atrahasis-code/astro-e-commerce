@@ -8,6 +8,7 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isMagicLink, setIsMagicLink] = useState(false);
+    const [isRegister, setIsRegister] = useState(false);
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -18,18 +19,21 @@ export default function LoginForm() {
             if (isMagicLink) {
                 await AuthService.loginWithMagicLink(email);
                 setError('Enlace mágico enviado. Revisa tu correo.');
+            } else if (isRegister) {
+                await AuthService.registerWithEmail(email, password);
+                setError('Cuenta creada. Revisa tu correo para confirmarla antes de ingresar.');
+                setIsRegister(false); // Switch back to login mode after success
             } else {
                 const { user, session } = await AuthService.loginWithEmail(email, password);
                 if (user) {
                     setUser(user);
-                    // Sync cookies for SSR (Supabase helper usually does this, but we ensure it)
                     document.cookie = `sb-access-token=${session?.access_token}; path=/; max-age=3600; SameSite=Lax; Secure`;
                     document.cookie = `sb-refresh-token=${session?.refresh_token}; path=/; max-age=3600; SameSite=Lax; Secure`;
                     window.location.href = '/';
                 }
             }
         } catch (err: any) {
-            setError(err.message || 'Error al iniciar sesión');
+            setError(err.message || 'Error en la operación');
         } finally {
             setLoading(false);
         }
@@ -37,8 +41,12 @@ export default function LoginForm() {
 
     return (
         <div class="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl border border-black/5">
-            <h2 class="text-3xl font-['Outfit'] font-bold text-brand-gray mb-2">Bienvenido</h2>
-            <p class="text-[#86868B] mb-8 text-sm">Ingresa tus credenciales para continuar</p>
+            <h2 class="text-3xl font-['Outfit'] font-bold text-brand-gray mb-2">
+                {isRegister ? 'Crear Cuenta' : 'Bienvenido'}
+            </h2>
+            <p class="text-[#86868B] mb-8 text-sm">
+                {isRegister ? 'Regístrate para empezar a comprar' : 'Ingresa tus credenciales para continuar'}
+            </p>
 
             <form onSubmit={handleSubmit} class="space-y-5">
                 <div>
@@ -68,7 +76,7 @@ export default function LoginForm() {
                 )}
 
                 {error && (
-                    <div class={`p-4 rounded-xl text-xs font-semibold ${error.includes('enviado') ? 'bg-blue-50 text-brand-blue' : 'bg-red-50 text-red-600'}`}>
+                    <div class={`p-4 rounded-xl text-xs font-semibold ${error.includes('enviado') || error.includes('creada') ? 'bg-blue-50 text-brand-blue' : 'bg-red-50 text-red-600'}`}>
                         {error}
                     </div>
                 )}
@@ -78,14 +86,26 @@ export default function LoginForm() {
                     disabled={loading}
                     class="w-full py-4 bg-brand-blue text-white rounded-full font-bold text-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100"
                 >
-                    {loading ? 'Procesando...' : isMagicLink ? 'Enviar Enlace' : 'Iniciar Sesión'}
+                    {loading ? 'Procesando...' : isRegister ? 'Registrarse' : isMagicLink ? 'Enviar Enlace' : 'Iniciar Sesión'}
                 </button>
             </form>
 
-            <div class="mt-8 pt-6 border-t border-black/5 text-center">
+            <div class="mt-8 pt-6 border-t border-black/5 space-y-4 text-center">
+                {!isMagicLink && (
+                    <button 
+                        onClick={() => setIsRegister(!isRegister)}
+                        class="block w-full text-xs font-bold text-brand-gray hover:text-brand-blue transition-colors"
+                    >
+                        {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate gratis'}
+                    </button>
+                )}
+                
                 <button 
-                    onClick={() => setIsMagicLink(!isMagicLink)}
-                    class="text-xs font-bold text-brand-blue hover:underline"
+                    onClick={() => {
+                        setIsMagicLink(!isMagicLink);
+                        setIsRegister(false);
+                    }}
+                    class="block w-full text-xs font-bold text-brand-blue hover:underline"
                 >
                     {isMagicLink ? 'Usar contraseña' : 'Usar enlace mágico (Magic Link)'}
                 </button>
@@ -93,3 +113,4 @@ export default function LoginForm() {
         </div>
     );
 }
+

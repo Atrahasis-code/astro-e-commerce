@@ -1,0 +1,17 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+// Simple guard (In reality this should be in middleware or a more robust check)
+if (!Astro.locals.user) {
+    return Astro.redirect('/admin/login');
+}
+---
+
+<Layout title="Dashboard | Admin">
+    <div class="container mx-auto px-6 py-12">
+        <h1 class="text-4xl font-bold font-['Outfit'] mb-8">Admin Dashboard</h1>
+        <div class="bg-white p-8 rounded-3xl border border-black/5 shadow-sm">
+            <p class="text-brand-gray">Bienvenido al panel de administración. Aquí podrás gestionar productos, órdenes y usuarios en el futuro.</p>
+        </div>
+    </div>
+</Layout>

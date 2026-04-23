@@ -15,7 +15,7 @@ const createMockQuery = (data: any) => {
     return mock;
 };
 
-vi.mock('../../lib/supabase', () => ({
+vi.mock('@/lib/supabase', () => ({
     supabase: {
         from: vi.fn()
     }

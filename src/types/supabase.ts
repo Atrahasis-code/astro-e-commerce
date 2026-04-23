@@ -171,6 +171,7 @@ export type Database = {
       }
       products: {
         Row: {
+          can_ship: boolean | null
           category_id: string | null
           created_at: string
           description: string | null
@@ -183,6 +184,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          can_ship?: boolean | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -195,6 +197,7 @@ export type Database = {
           title: string
         }
         Update: {
+          can_ship?: boolean | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -234,6 +237,27 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: string
+          user_id?: string
         }
         Relationships: []
       }
