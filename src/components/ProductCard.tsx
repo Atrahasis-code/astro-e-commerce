@@ -1,6 +1,6 @@
 import type { FunctionalComponent } from 'preact';
-import { formatPrice } from '../utils/format';
-import type { Product } from '../types';
+import { formatPrice } from '@/utils/format';
+import type { Product } from '@/types';
 
 interface Props {
     product: Product;

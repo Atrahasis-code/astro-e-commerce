@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/preact';
-import { ProductCard } from '../components/ProductCard';
+import { ProductCard } from '@/components/ProductCard';
 import { describe, it, expect } from 'vitest';
 
 const mockProduct = {

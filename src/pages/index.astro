@@ -1,9 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { ProductCard } from '../components/ProductCard';
-import { ProductService } from '../services/products.service';
-import { CategoryService } from '../services/categories.service';
-import type { Product, Category } from '../types';
+import Layout from '@/layouts/Layout.astro';
+import { ProductCard } from '@/components/ProductCard';
+import { ProductService } from '@/services/products.service';
+import { CategoryService } from '@/services/categories.service';
+import type { Product, Category } from '@/types';
 
 // Data fetching via Service Layer (Clean Template)
 let categories: Category[] = [];

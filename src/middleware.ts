@@ -1,5 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
-import { supabase } from "./lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const accessToken = context.cookies.get("sb-access-token");

@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
-import { AuthService } from '../../services/auth.service';
-import { setUser } from '../../store/auth.store';
+import { AuthService } from '@/services/auth.service';
+import { setUser } from '@/store/auth.store';
 
 export default function LoginForm() {
     const [email, setEmail] = useState('');

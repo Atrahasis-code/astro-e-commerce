@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ProductService } from '../../services/products.service';
-import { supabase } from '../../lib/supabase';
+import { ProductService } from '@/services/products.service';
+import { supabase } from '@/lib/supabase';
 
 // Helper to create a chainable mock
 const createMockQuery = (data: any) => {

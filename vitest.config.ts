@@ -11,6 +11,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@': '/home/atrahasis/development/test-e-commerce/src',
       'react': 'preact/compat',
       'react-dom': 'preact/compat',
     },
