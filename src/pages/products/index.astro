@@ -1,28 +1,27 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { ProductCard } from '../../components/ProductCard';
-import { supabase } from '../../lib/supabase';
+import Layout from '@/layouts/Layout.astro';
+import { ProductCard } from '@/components/ProductCard';
+import { ProductService } from '@/services/products.service';
+import { CategoryService } from '@/services/categories.service';
+import type { Product, Category } from '@/types';
 
-// URL-driven filters
+// URL-driven filters via Service Layer
 const categoryId = Astro.url.searchParams.get('category');
 const searchQuery = Astro.url.searchParams.get('q');
 
-let query = supabase.from('products').select('*').eq('is_active', true);
+let products: Product[] = [];
+let categories: Category[] = [];
 
-if (categoryId) {
-    query = query.eq('category_id', categoryId);
+try {
+    [products, categories] = await Promise.all([
+        ProductService.searchProducts(searchQuery, categoryId),
+        CategoryService.getAllCategories()
+    ]);
+} catch (e) {
+    console.error('Error fetching products:', e);
 }
 
-if (searchQuery) {
-    query = query.ilike('title', `%${searchQuery}%`);
-}
-
-const { data: products, error } = await query;
-const { data: categories } = await supabase.from('categories').select('*');
-
-if (error) console.log('Error fetching products:', error);
-
-const displayProducts = (products && products.length > 0) ? products : [];
+const displayProducts = products;
 ---
 
 <Layout title="Catálogo de Productos | DigitalStore">

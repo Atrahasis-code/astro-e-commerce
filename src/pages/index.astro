@@ -1,29 +1,31 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { ProductCard } from '../components/ProductCard';
-import { supabase } from '../lib/supabase';
+import Layout from '@/layouts/Layout.astro';
+import { ProductCard } from '@/components/ProductCard';
+import { ProductService } from '@/services/products.service';
+import { CategoryService } from '@/services/categories.service';
+import type { Product, Category } from '@/types';
 
-// Fetch dynamic categories
-const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name');
+// Data fetching via Service Layer (Clean Template)
+let categories: Category[] = [];
+let featuredProducts: Product[] = [];
 
-// Fetch some featured products
-const { data: featuredProducts } = await supabase
-    .from('products')
-    .select('*')
-    .eq('is_active', true)
-    .limit(4);
+try {
+    [categories, featuredProducts] = await Promise.all([
+        CategoryService.getAllCategories(),
+        ProductService.getFeaturedProducts(4)
+    ]);
+} catch (e) {
+    console.error('Error fetching data:', e);
+}
 
 // Fallback logic for development if DB is empty
-const displayCategories = categories && categories.length > 0 ? categories : [
+const displayCategories = categories.length > 0 ? categories : [
     { id: '1', name: 'Accesorios', slug: 'accesorios' },
     { id: '2', name: 'Ropa', slug: 'ropa' },
     { id: '3', name: 'Periféricos', slug: 'perifericos' }
 ];
 
-const displayProducts = featuredProducts && featuredProducts.length > 0 ? featuredProducts : [
+const displayProducts = featuredProducts.length > 0 ? featuredProducts : [
     {
         id: '1',
         title: 'Neural Bracer X-1',

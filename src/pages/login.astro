@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import LoginForm from '@/components/auth/LoginForm';
+
+// Redirect if already logged in (SSR check)
+if (Astro.locals.user) {
+    return Astro.redirect('/');
+}
+---
+
+<Layout title="Iniciar Sesión | DigitalStore">
+    <div class="min-h-[calc(100vh-160px)] flex items-center justify-center px-6 py-12 bg-surface-gray/30">
+        <LoginForm client:load />
+    </div>
+</Layout>
