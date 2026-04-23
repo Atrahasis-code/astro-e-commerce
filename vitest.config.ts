@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import preact from '@preact/preset-vite';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -11,7 +12,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/home/atrahasis/development/test-e-commerce/src',
+      '@': path.resolve(__dirname, './src'),
       'react': 'preact/compat',
       'react-dom': 'preact/compat',
     },
